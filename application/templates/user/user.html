@@ -1,0 +1,322 @@
+{% extends "layout.html" %}
+{% block body %}
+	
+
+
+			<!-- <div class="layout-app">  -->
+			<div class="innerAll">
+	<div class="row">
+		<div class="col-lg-9 col-md-8">
+			
+			<div class="timeline-cover">	
+	<div class="cover image ">
+		<div class="top">
+			<img src="/static/{{user.header}}" class="img-responsive" />					
+		</div>
+	</div>
+	<div class="widget cover image">	
+		<div class="widget-body padding-none margin-none">
+			<div class="photo">
+				<img src="/static/{{user.picture}}" class="img-circle" width="120" height="130"/> 
+			</div>
+			<div class="innerAll border-right pull-left">
+				<h3 class="margin-none">{{user.Username}}</h3>
+				<span>{{user.full_name}}</span>
+			</div>
+			<div class="innerAll pull-left">
+				<p class="lead margin-none "> <i class="fa fa-quote-left text-muted fa-fw"></i> {{user.role}}  {% if session['id'] %}{% if session['id'] != user.id %}{% if followingthis(user.followers)!=True %}<button id="follow_user" class="btn btn-sm btn-success" onclick="follow_user({{user.id}})">Follow</button><span id="followed_user"></span>{% else %}<button id="follow_user" class="btn btn-sm btn-success" onclick="unfollow_user({{user.id}})">Unfollow</button><span id="followed_user"></span>{% endif %}{% endif %}</p> {% endif %}
+			</div>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	function follow_user(id){
+		document.getElementById("follow_user").innerHTML="following";
+		/*window.setTimeout(function(){
+			document.getElementById("follow_user").style.display="none";
+			document.getElementById("followed_user").innerHTML='<button id="follow_user" class="btn btn-sm btn-success" onclick="unfollow_user(id)">Unfollow</button>';
+		}, 3000)*/
+				var hr = new XMLHttpRequest();
+            	var url = "{{url_for('users')}}/follow";
+            	var c_vars = "id="+id
+                hr.open("POST", url, true);
+                hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                hr.onreadystatechange = function() {
+                    if(hr.readyState == 4 && hr.status == 200) {
+                        var return_data = hr.responseText;
+                        if(return_data=="succesfull"){
+                        	document.getElementById("follow_user").style.display="none";
+							document.getElementById("followed_user").innerHTML='<button id="follow_user" class="btn btn-sm btn-success" onclick="unfollow_user(id)">Unfollow</button>';
+							location.reload()
+                        }
+                    }
+                }
+                hr.send(c_vars)
+		
+	}
+
+
+	function unfollow_user(id){
+		document.getElementById("follow_user").innerHTML="Unfollowing";
+		/*window.setTimeout(function(){
+			document.getElementById("follow_user").style.display="none";
+			document.getElementById("followed_user").innerHTML='<button id="follow_user" class="btn btn-sm btn-success" onclick="unfollow_user(id)">Unfollow</button>';
+		}, 3000)*/
+				var hr = new XMLHttpRequest();
+            	var url = "{{url_for('users')}}/unfollow";
+            	var c_vars = "id="+id
+                hr.open("POST", url, true);
+                hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                hr.onreadystatechange = function() {
+                    if(hr.readyState == 4 && hr.status == 200) {
+                        var return_data = hr.responseText;
+                        if(return_data=="succesfull"){
+                        	document.getElementById("follow_user").style.display="none";
+							document.getElementById("followed_user").innerHTML='<button id="follow_user" class="btn btn-sm btn-success" onclick="follow_user(id)">follow</button>';
+							location.reload()
+                        }
+                    }
+                }
+                hr.send(c_vars)
+		
+	}
+</script>
+
+			<div class="widget">
+				<div class="innerAll">	
+					<div class="row border-top">
+						<div class="col-sm-6">
+
+							<h5 class="innerT">Stats</h5>
+							<div class="widget bg-gray innerAll margin-none">
+								<span class="innerR innerB">
+									<i class="box-generic innerAll icon-chef-hat fa fa-4x" data-toggle="tooltip" data-original-title="Cooking" data-placement="bottom"></i>
+								</span>
+								<span class="innerR innerB">
+									<i class="box-generic innerAll  icon-soccerball-fiil fa fa-4x" data-toggle="tooltip" data-original-title="Soccer" data-placement="bottom"></i>
+								</span>
+								<span class="innerR innerB">
+									<i class="box-generic innerAll  icon-steering-wheel fa fa-4x" data-toggle="tooltip" data-original-title="Driving" data-placement="bottom"></i>
+								</span>
+								<span class="innerR innerB">
+									<i class="box-generic innerAll  icon-swimming fa fa-4x" data-toggle="tooltip" data-original-title="Swimming" data-placement="bottom"></i>
+								</span>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<h5 class="innerT">Close Friends</h5>
+							<div class="widget bg-gray">
+								<div class="innerAll">
+								{% for friend in friends(user.followers, user.following) %}
+								{% for person in last_comment(friend) %}
+																		<a href="{{url_for('users')}}/{{person.Username}}/{{person.id}}">
+										<img src="/static/{{person.picture}}" alt="{{person.Username}}" class="innerR innerB half" width="80" height="80"/>
+									</a>
+									{% endfor %}
+									{% endfor %}
+																		
+								</div>
+							</div>
+						</div>
+
+					</div>
+					
+
+				</div>
+			</div>
+			
+{% if session['login'] %}
+{% if session['id']== user.id %}
+			<div class="widget">
+
+			{% if message %}
+			 <p class="form-control-static" syle="color:red;">{{ message }}</p>
+			{% endif %}
+			{% for message in form.name.errors %}
+			 <p class="form-control-static" syle="color:red;">{{ message }}</p>
+			{% endfor %}
+			{% for message in form.facebook.errors %}
+			 <p class="form-control-static" syle="color:red;">{{ message }}</p>
+			{% endfor %}
+			{% for message in form.twitter.errors %}
+			 <p class="form-control-static" syle="color:red;">{{ message }}</p>
+			{% endfor %}
+			{% for message in form.website.errors %}
+			 <p class="form-control-static" syle="color:red;">{{ message }}</p>
+			{% endfor %}
+			{% for message in form.phone_no.errors %}
+			 <p class="form-control-static" syle="color:red;">{{ message }}</p>
+			{% endfor %}
+			<div class="innerAll">
+			<form method="POST" action="" enctype="multipart/form-data">
+			<div class="form-group">
+    		<label for="exampleInputEmail1">Header Image</label>
+    		<input type="file" name="headerimg" class="form-control" accept=".jpg,.png,.gif,.jpeg"/>
+			</div>
+			<div class="form-group">
+			<label for="exampleInputEmail1">Profile pic</label>
+    		<input type="file" name="profilepic" class="form-control" accept=".jpg,.png,.gif,.jpeg"/>
+			</div>
+			<div class="form-group">
+    		<label for="exampleInputEmail1">{{form.name.label}}</label>
+    		{{form.name(class_="form-control", value=user.full_name)}}
+			</div>
+			<div class="form-group">
+    		<label for="exampleInputEmail1">{{form.facebook.label}}</label>
+    		{{form.facebook(class_="form-control", value=user.facebook)}}
+			</div>
+			<div class="form-group">
+    		<label for="exampleInputEmail1">{{form.twitter.label}}</label>
+    		{{form.twitter(class_="form-control", value=user.twitter)}}
+			</div>
+			<div class="form-group">
+    		<label for="exampleInputEmail1">{{form.website.label}}</label>
+    		{{form.website(class_="form-control", value=user.website)}}
+			</div>
+			<div class="form-group">
+    		<label for="exampleInputEmail1">{{form.phone_no.label}}</label>
+    		{{form.phone_no(class_="form-control", value=user.phone)}}
+			</div>
+			<CENTER>{{form.submit(class_="btn btn-success")}}</CENTER>
+			</form>
+			</div>
+			</div>
+			{% endif %}
+			{% endif %}
+		</div>
+
+
+
+
+		<div class="col-md-4 col-lg-3">
+
+			<div class="widget">
+				<div class="widget-head border-bottom bg-gray">
+					<h5 class="innerAll pull-left margin-none">Basic Info</h5>
+					<div class="pull-right">
+						<a href="" class="text-muted">
+							<i class="fa fa-pencil innerL"></i>
+						</a>
+					</div>
+				</div>
+				<div class="widget-body">
+					<div class="row">
+						<div class="col-sm-6">User:</div>
+						<div class="col-sm-6 text-right">
+							<span class="label label-default">{{user.Username}}</span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6">Friends:</div>
+						<div class="col-sm-6 text-right">
+							<span class="label label-default">{{no_of_friends(user.followers, user.following)}}</span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6">Joined:</div>
+						<div class="col-sm-6 text-right">
+							<span class="label label-default">{{user.regstamp}}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="widget">
+				<div class="widget-head border-bottom bg-gray">
+					<h5 class="innerAll pull-left margin-none">Contact</h5>
+					<div class="pull-right">
+						<a href="{{user.facebook}}" class="text-muted">
+							<i class="fa fa-facebook innerL"></i>
+						</a>
+						<a href="{{user.twitter}}" class="text-muted">
+							<i class="fa fa-twitter innerL"></i>
+						</a>
+						<a href="{{user.website}}" class="text-muted">
+							<i class="fa fa-dribbble innerL"></i>
+						</a>
+					</div>
+				</div>
+				<div class="widget-body padding-none">
+					<div class="innerAll">
+						<p class=" margin-none"><i class="fa fa-phone fa-fw text-muted"></i>{{user.phone}}</p>
+					</div>
+					<div class="border-top innerAll">
+						<p class=" margin-none"><i class="fa fa-link fa-fw text-muted"></i> <a href="{{user.website}}">Visit website</a></p>
+					</div>
+				</div>
+			</div>
+
+			
+			
+			<!-- Widget -->
+
+<!-- // Widget END -->
+
+
+
+		
+		</div>
+	</div>
+</div>
+
+	
+		
+				
+		</div>
+		<!-- // Content END -->
+		
+		<div class="clearfix"></div>
+		<!-- // Sidebar menu & content wrapper END -->
+		
+				<!-- Footer -->
+		<div id="footer" class="hidden-print">
+			
+			<!--  Copyright Line -->
+			<div class="copy">&copy; 2012 - 2014 - <a href="http://www.mosaicpro.biz">MosaicPro</a> - All Rights Reserved. <a href="http://themeforest.net/?ref=mosaicpro" target="_blank">Purchase Social Admin Template</a> - Current version: v2.0.0-rc8 / <a target="_blank" href="/static/assets//static//static/CHANGELOG.txt?v=v2.0.0-rc8">changelog</a></div>
+			<!--  End Copyright Line -->
+	
+		</div>
+		<!-- // Footer END -->
+		
+				
+	</div>
+	<!-- // Main Container Fluid END -->
+	
+
+	<!-- Global -->
+	<script data-id="App.Config">
+	var App = {};	var basePath = '',
+		commonPath = '/static/assets/',
+		rootPath = '/static/',
+		DEV = false,
+		componentsPath = '/static/assets/components/';
+	
+	var primaryColor = '#25ad9f',
+		dangerColor = '#b55151',
+		successColor = '#609450',
+		infoColor = '#4a8bc2',
+		warningColor = '#ab7a4b',
+		inverseColor = '#45484d';
+	
+	var themerPrimaryColor = primaryColor;
+
+		</script>
+	
+	<script src="/static/assets/library/bootstrap/js/bootstrap.min.js?v=v2.0.0-rc8&sv=v0.0.1.2"></script>
+<script src="/static/assets/plugins/core_nicescroll/jquery.nicescroll.min.js?v=v2.0.0-rc8&sv=v0.0.1.2"></script>
+<script src="/static/assets/plugins/core_breakpoints/breakpoints.js?v=v2.0.0-rc8&sv=v0.0.1.2"></script>
+<script src="/static/assets/plugins/core_preload/pace.min.js?v=v2.0.0-rc8&sv=v0.0.1.2"></script>
+<script src="/static/assets/components/core_preload/preload.pace.init.js?v=v2.0.0-rc8&sv=v0.0.1.2"></script>
+<script src="/static/assets/plugins/menu_sidr/jquery.sidr.js?v=v2.0.0-rc8"></script>
+<script src="/static/assets/components/widget_twitter/twitter.init.js?v=v2.0.0-rc8&sv=v0.0.1.2"></script>
+<script src="/static/assets/plugins/media_holder/holder.js?v=v2.0.0-rc8&sv=v0.0.1.2"></script>
+<script src="/static/assets/components/menus/sidebar.main.init.js?v=v2.0.0-rc8"></script>
+<script src="/static/assets/components/menus/sidebar.collapse.init.js?v=v2.0.0-rc8"></script>
+<script src="/static/assets/components/menus/menus.sidebar.chat.init.js?v=v2.0.0-rc8"></script>
+<script src="/static/assets/plugins/other_mixitup/jquery.mixitup.min.js?v=v2.0.0-rc8&sv=v0.0.1.2"></script>
+<script src="/static/assets/plugins/other_mixitup/mixitup.init.js?v=v2.0.0-rc8&sv=v0.0.1.2"></script>
+<script src="/static/assets/components/core/core.init.js?v=v2.0.0-rc8"></script>	
+</body>
+{% endblock %}
+</html>

@@ -1,0 +1,264 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<style>
+#easyPaginate {width:300px;}
+#easyPaginate img {display:block;margin-bottom:10px;}
+.easyPaginateNav a {padding:5px; align: center;}
+.easyPaginateNav a.current {font-weight:bold;text-decoration:underline;}
+</style>
+
+			<!-- <div class="layout-app">  -->
+			<div class="innerLR">
+	<div class="separator-h"></div>
+	<br>
+
+	<!-- Search Bar -->
+	<!-- End Search Bar -->
+
+	<div class="separator-h"></div>
+		
+	<!-- row -->
+	<div class="row">
+
+		<div class="col-md-9">
+			<div class="widget">
+
+					
+				<!-- Post List -->
+
+				<div id="main">
+				{% if topic %}
+				{% for user in last_comment(topic.created_by) %}
+
+				<div class="main">
+				<jan>
+				<div class="replies">
+												<div class="media innerAll inner-2x border-bottom margin-none">
+
+					<div class="pull-left media-object" style="width:100px">
+						<div class="text-center">
+							<a href="{{url_for('users')}}/{{user.Username}}/{{user.id}}" class="clearfix">
+								<img src="/static/{{ user.picture }}" class="rounded-none" height="30" width="30">
+							</a>
+							<small class="text-small">{{ user.role }}</small>
+							
+							<div class="innerT half">
+								
+								<a href="" class="text-muted"><i class="icon-user-1"></i></a>
+								<a href="" class="text-muted"><i class="icon-trophy-fill"></i></a>
+								<a href="" class="text-muted"><i class="icon-star-fill"></i></a>
+							</div>
+						</div>
+					</div>
+
+					<div class="media-body">
+						<small class="pull-right label label-default">{{ topic.regstamp }}</small>
+						<h5><a href="{{url_for('users')}}/{{user.Username}}/{{user.id}}" class="text-primary">{{ user.Username }}</a> <span>Asked: <b><strong>{{ topic.title|safe }}</strong></b></span></h5>
+						<p>{{ topic.content|safe }}
+						</p>
+
+						<small class="display-block text-muted">
+							Posted by <a href="">{{ user.Username }}</a> | 
+							posted in <a href="">{{ get_category(topic.category).name }}</a> |
+							<!-- <span class="text-success"><i class="fa fa-check"></i> Answered</span> -->
+						</small>
+						
+					</div>
+				</div>
+				</div>
+				</div>
+				</jan>
+				{% if replies %}
+				{% for reply in replies %}
+				{% for user in last_comment(reply.reply_by) %}
+				<jan>
+				<div class="replies">
+				<div class="media innerAll inner-2x border-bottom margin-none">
+
+					<div class="pull-left media-object" style="width:100px">
+						<div class="text-center">
+							<a href="{{url_for('users')}}/{{user.Username}}/{{user.id}}" class="clearfix">
+								<img src="/static/{{ user.picture }}" class="rounded-none" height="30" width="30">
+							</a>
+							<small class="text-small">{{ user.role }}</small>
+							
+							<div class="innerT half">
+								
+								<a href="" class="text-muted"><i class="icon-user-1"></i></a>
+								<a href="" class="text-muted"><i class="icon-trophy-fill"></i></a>
+								<a href="" class="text-muted"><i class="icon-star-fill"></i></a>
+							</div>
+						</div>
+					</div>
+
+					<div class="media-body">
+						<small class="pull-right label label-default">{{ reply.regstamp }}</small>
+						<h5><a href="{{url_for('users')}}/{{user.Username}}/{{user.id}}" class="text-primary">{{ user.Username }}</a> <span>Posted:</span></h5>
+						<p>{{ reply.reply|safe }}</p>
+
+						<small class="display-block text-muted">
+							Posted by <a href="">{{ user.Username }}</a> | 
+							posted in <a href="">{{ get_category(topic.category).name }}</a> |
+							<!-- <span class="text-success"><i class="fa fa-check"></i> Answered</span> -->
+						</small>
+						
+					</div>
+				</div>
+				</div>
+				</jan>
+
+				{% endfor %}
+
+				{% endfor %}
+				{% endif %}
+
+
+
+				{% endfor %}
+				{% endif %}
+
+					</div>			
+								
+								<!-- // END Category Listing -->
+
+				<div class="innerAll text-right">
+
+
+				</div>
+				{% if session['login'] %}
+
+				<h4 class="innerAll border-top border-bottom bg-gray margin-none">Reply to Post</h4>
+				<form class="text-right innerAll" method="POST" action=''>
+					<div class="innerB">
+						<textarea name="reply" id="" cols="30" rows="3" class="form-control rounded-none margin-bottom notebook border-none padding-none" placeholder="Type here...">This is my reply</textarea>
+					</div>
+					<button type="submit" class="btn btn-primary btn-sm strong">Submit <i class="fa fa-arrow-right fa-fw"></i></button>
+				</form>
+				{% endif %}
+			</div>
+			<!-- // END col-separator -->	
+		</div>
+		<!-- // END col -->
+
+		<!-- col -->
+		<div class="col-md-3">
+
+			<!-- col-separator -->
+			
+			<div class="widget">
+
+				<!-- Heading -->
+				<h4 class="innerAll margin-bottom-none bg-primary"><i class="fa fa-refresh fa-fw"></i> Categories </h4>
+
+				<!-- Listing -->
+				{% if categories %}
+				{% for each in categories %}
+								<div class="bg-gray-hover innerAll half border-bottom">
+			    	<div class="innerAll half">
+			    		<h5 class="innerB half margin-none"><a href="#" class="text-primary strong">{{ each.name }}</a></h5>
+						<small class="text-center text-inverse text-muted"> 
+						{% if subcategories %}
+						{% for category in subcategories %}
+						{% if category.category == each.id %}
+						<a href="{{ url_for('category') }}/{{ category.id }}/{{ category.name }}">{{ category.name }} </a>
+						{% endif %}
+						{% endfor %}
+						{% endif %}
+						
+						</small>
+			    	</div>
+				</div>
+				{% endfor %}
+				{% endif %}
+								<!-- // END Listing -->
+								
+
+			</div>
+		</div>
+		<!-- // END col -->
+						
+	</div>
+	<!-- // END row -->
+<div class="paginate"></div>
+</div>	
+		
+				
+		</div>
+		<!-- // Content END -->
+		
+		<div class="clearfix"></div>
+		<!-- // Sidebar menu & content wrapper END -->
+		
+				<!-- Footer -->
+		<div id="footer" class="hidden-print">
+			
+			<!--  Copyright Line -->
+			<div class="copy">&copy; 2012 - 2014 - <a href="http://www.mosaicpro.biz">MosaicPro</a> - All Rights Reserved. <a href="http://themeforest.net/?ref=mosaicpro" target="_blank">Purchase Social Admin Template</a> - Current version: v2.0.0-rc8 / <a target="_blank" href="/static/assets//static//static/CHANGELOG.txt?v=v2.0.0-rc8">changelog</a></div>
+			<!--  End Copyright Line -->
+	
+		</div>
+		<!-- // Footer END -->
+		
+				
+	</div>
+	<!-- // Main Container Fluid END -->
+	
+{% if replied %}
+<script type="text/javascript">
+	var all = document.getElementsByClassName("replies").length
+	var page_to = Math.round(parseInt(all)/10)  
+</script>
+{% else %}
+<script type="text/javascript">
+	
+	var page_to = 1
+</script>
+{% endif %}
+	<!-- Global -->
+	<script data-id="App.Config">
+	var App = {};	var basePath = '',
+		commonPath = '/static/assets/',
+		rootPath = '/static/',
+		DEV = false,
+		componentsPath = '/static/assets/components/';
+	
+	var primaryColor = '#25ad9f',
+		dangerColor = '#b55151',
+		successColor = '#609450',
+		infoColor = '#4a8bc2',
+		warningColor = '#ab7a4b',
+		inverseColor = '#45484d';
+	
+	var themerPrimaryColor = primaryColor;
+
+	    $('#main').easyPaginate({
+
+        paginateElement: 'jan',
+        currentPage: 2,
+        elementsPerPage: 10,
+        effect: 'fade',
+        hashPage: 'page',
+        firstButtonText: 'first',
+        lastButtonText: 'last'
+    	});
+
+	
+
+
+		</script>
+	
+	<script src="/static/assets/library/bootstrap/js/bootstrap.min.js?v=v2.0.0-rc8&sv=v0.0.1.2"></script>
+<script src="/static/assets/plugins/core_nicescroll/jquery.nicescroll.min.js?v=v2.0.0-rc8&sv=v0.0.1.2"></script>
+<script src="/static/assets/plugins/core_breakpoints/breakpoints.js?v=v2.0.0-rc8&sv=v0.0.1.2"></script>
+<script src="/static/assets/plugins/core_preload/pace.min.js?v=v2.0.0-rc8&sv=v0.0.1.2"></script>
+<script src="/static/assets/components/core_preload/preload.pace.init.js?v=v2.0.0-rc8&sv=v0.0.1.2"></script>
+<script src="/static/assets/plugins/menu_sidr/jquery.sidr.js?v=v2.0.0-rc8"></script>
+<script src="/static/assets/components/menus/sidebar.main.init.js?v=v2.0.0-rc8"></script>
+<script src="/static/assets/components/menus/sidebar.collapse.init.js?v=v2.0.0-rc8"></script>
+<script src="/static/assets/components/menus/menus.sidebar.chat.init.js?v=v2.0.0-rc8"></script>
+<script src="/static/assets/plugins/other_mixitup/jquery.mixitup.min.js?v=v2.0.0-rc8&sv=v0.0.1.2"></script>
+<script src="/static/assets/plugins/other_mixitup/mixitup.init.js?v=v2.0.0-rc8&sv=v0.0.1.2"></script>
+<script src="/static/assets/components/core/core.init.js?v=v2.0.0-rc8"></script>	
+</body>
+{% endblock %}

@@ -1,0 +1,283 @@
+{% extends "layout.html" %}
+{% block body %}
+
+	
+
+	
+
+
+			<!-- <div class="layout-app">  -->
+			<div class="innerLR">
+	<div class="separator-h"></div>
+
+	<!-- Search Bar -->
+	<div class="input-group">
+  		<input type="text" class="form-control" placeholder="Search this forum...">
+  		<span class="input-group-btn">
+    		<button class="btn btn-primary rounded-none" type="button"><i class="fa fa-search"></i></button>
+  		</span>
+	</div>
+	<!-- End Search Bar -->
+
+	<div class="separator-h"></div>
+		
+	<!-- row -->
+	<div class="row">
+
+		<div class="col-md-9">
+			<div class="widget">
+				
+				<!-- Category Heading -->
+				<div class="innerAll bg-gray border-bottom">
+					<h4 class="margin-none">Featured</h4>
+					<div class="clearfix"></div>
+				</div>
+				<!-- End Category Heading -->
+				
+				<!-- Category Listing -->
+				{% if featured %}
+				{% for one in featured %}
+												<div class="bg-gray-hover overflow-hidden">
+					<div class="row innerAll half border-bottom">
+						<div class="col-sm-6 col-xs-8">
+							<ul class="media-list margin-none">
+								<li class="media">
+								    <a class="pull-left innerAll half " href="#">
+								  		<span class="empty-photo"><i class="fa fa-folder fa-2x text-muted"></i></span>
+								    </a>
+								    <div class="media-body">
+									    <div class="innerAll half">
+									    	<h4 class="margin-none"><a href="{{ url_for('topics') }}/{{ random_number() }}/{{ one.slug }}" class="media-heading strong text-primary">{{ one.title }}</a></h4>
+									  		<div class="clearfix"></div>
+								    	</div>
+										
+								    </div>
+								</li>
+							</ul>
+						</div>
+						<div class="col-sm-3 col-xs-4">
+							<div class="text-center">
+								<p class="lead strong margin-bottom-none">{{ one.posts }}</p>
+								<span class="text-muted">POSTS</span>
+							</div>
+						</div>
+						<div class="col-sm-3 col-xs-hidden">
+						{% for thisuser in last_comment(one.last_post_by) %}
+							<div class="innerAll half">
+								<div class="media">
+									<a href="" class="pull-left">
+										<img src="/static/{{ thisuser.picture }}" class="media-object" height="30" width="30"/>
+									</a>
+									<div class="media-body">
+										<a href="{{ url_for('users') }}/{{ thisuser.Username }}/{{thisuser.id}}" class="text-small">{{ thisuser.Username }}</a>
+										<div class="clearfix"></div>
+										<small>last replied</small>
+									</div>
+								</div>
+							</div>
+						{% endfor %}
+
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+				{% endif %}
+								
+								<!-- // END Category Listing -->
+
+
+			</div>
+			<div class="widget">
+
+				<!-- Category Heading -->
+				<div class="innerAll bg-gray border-bottom">
+					<h4 class="margin-none">Top Posts</h4>
+					<div class="clearfix"></div>
+				</div>
+				<!-- End Category Heading -->
+				<!-- Category Listing -->
+					{% if toppost %}
+				{% for one in toppost %}
+												<div class="bg-gray-hover overflow-hidden">
+					<div class="row innerAll half border-bottom">
+						<div class="col-sm-6 col-xs-8">
+							<ul class="media-list margin-none">
+								<li class="media">
+								    <a class="pull-left innerAll half " href="#">
+								  		<span class="empty-photo"><i class="fa fa-folder fa-2x text-muted"></i></span>
+								    </a>
+								    <div class="media-body">
+									    <div class="innerAll half">
+									    	<h4 class="margin-none"><a href="{{ url_for('topics') }}/{{ random_number() }}/{{ one.slug }}" class="media-heading strong text-primary">{{ one.title }}</a></h4>
+									  		<div class="clearfix"></div>
+								    	</div>
+										
+								    </div>
+								</li>
+							</ul>
+						</div>
+						<div class="col-sm-3 col-xs-4">
+							<div class="text-center">
+								<p class="lead strong margin-bottom-none">{{ one.posts }}</p>
+								<span class="text-muted">POSTS</span>
+							</div>
+						</div>
+						<div class="col-sm-3 col-xs-hidden">
+						{% for thisuser in last_comment(one.last_post_by) %}
+							<div class="innerAll half">
+								<div class="media">
+									<a href="" class="pull-left">
+										<img src="/static/{{ thisuser.picture }}" class="media-object" height="30" width="30"/>
+									</a>
+									<div class="media-body">
+										<a href="{{ url_for('users') }}/{{ thisuser.Username }}/{{thisuser.id}}" class="text-small">{{ thisuser.Username }}</a>
+										<div class="clearfix"></div>
+										<small>last replied</small>
+									</div>
+								</div>
+							</div>
+						{% endfor %}
+
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+				{% endif %}
+											
+								<!-- // END Category Listing -->
+
+			</div>
+			<!-- // END col-separator -->	
+		</div>
+		<!-- // END col -->
+
+		<!-- col -->
+		<div class="col-md-3">
+
+			<!-- col-separator -->
+			
+			<div class="widget">
+
+				<!-- Heading -->
+				<h4 class="innerAll margin-bottom-none bg-primary"><i class="fa fa-refresh fa-fw"></i> Categories </h4>
+
+				<!-- Listing -->
+				{% if categories %}
+				{% for each in categories %}
+								<div class="bg-gray-hover innerAll half border-bottom">
+			    	<div class="innerAll half">
+			    		<h5 class="innerB half margin-none"><a href="#" class="text-primary strong">{{ each.name }}</a></h5>
+						<small class="text-center text-inverse text-muted"> 
+						{% if subcategories %}
+						{% for category in subcategories %}
+						{% if category.category == each.id %}
+						<a href="{{ url_for('category') }}/{{ category.id }}/{{ category.name }}">{{ category.name }} </a>
+						{% endif %}
+						{% endfor %}
+						{% endif %}
+						
+						</small>
+			    	</div>
+				</div>
+				{% endfor %}
+				{% endif %}
+								<!-- // END Listing -->
+
+			</div>
+		</div>
+		<!-- // END col -->
+						
+	</div>
+	<!-- // END row -->
+
+</div>	
+<div id="online"></div>
+
+		
+				
+		</div>
+		<!-- // Content END -->
+		
+		<div class="clearfix"></div>
+		<!-- // Sidebar menu & content wrapper END -->
+		
+				<!-- Footer -->
+		<div id="footer" class="hidden-print">
+			
+			<!--  Copyright Line -->
+			<div class="copy">&copy; 2012 - 2014 - <a href="http://www.mosaicpro.biz">MosaicPro</a> - All Rights Reserved. <a href="http://themeforest.net/?ref=mosaicpro" target="_blank">Purchase Social Admin Template</a> - Current version: v2.0.0-rc8 / <a target="_blank" href="/static/assets//static//static/CHANGELOG.txt?v=v2.0.0-rc8">changelog</a></div>
+			<!--  End Copyright Line -->
+	
+		</div>
+		<!-- // Footer END -->
+		
+				
+	</div>
+	<!-- // Main Container Fluid END -->
+	
+
+	<!-- Global -->
+	<script data-id="App.Config">
+	var App = {};	var basePath = '',
+		commonPath = '/static/assets/',
+		rootPath = '/static/',
+		DEV = false,
+		componentsPath = '/static/assets/components/';
+	
+	var primaryColor = '#25ad9f',
+		dangerColor = '#b55151',
+		successColor = '#609450',
+		infoColor = '#4a8bc2',
+		warningColor = '#ab7a4b',
+		inverseColor = '#45484d';
+	
+	var themerPrimaryColor = primaryColor;
+
+		</script>
+	
+	<script src="/static/assets/library/bootstrap/js/bootstrap.min.js?v=v2.0.0-rc8&sv=v0.0.1.2"></script>
+<script src="/static/assets/plugins/core_nicescroll/jquery.nicescroll.min.js?v=v2.0.0-rc8&sv=v0.0.1.2"></script>
+<script src="/static/assets/plugins/core_breakpoints/breakpoints.js?v=v2.0.0-rc8&sv=v0.0.1.2"></script>
+<script src="/static/assets/plugins/core_preload/pace.min.js?v=v2.0.0-rc8&sv=v0.0.1.2"></script>
+<script src="/static/assets/components/core_preload/preload.pace.init.js?v=v2.0.0-rc8&sv=v0.0.1.2"></script>
+<script src="/static/assets/plugins/menu_sidr/jquery.sidr.js?v=v2.0.0-rc8"></script>
+<script src="/static/assets/components/menus/sidebar.main.init.js?v=v2.0.0-rc8"></script>
+<script src="/static/assets/components/menus/sidebar.collapse.init.js?v=v2.0.0-rc8"></script>
+<script src="/static/assets/components/menus/menus.sidebar.chat.init.js?v=v2.0.0-rc8"></script>
+<script src="/static/assets/plugins/other_mixitup/jquery.mixitup.min.js?v=v2.0.0-rc8&sv=v0.0.1.2"></script>
+<script src="/static/assets/plugins/other_mixitup/mixitup.init.js?v=v2.0.0-rc8&sv=v0.0.1.2"></script>
+<script src="/static/assets/components/core/core.init.js?v=v2.0.0-rc8"></script>	
+</body>
+<script type="text/javascript" src="/static/socket.io.min.js"></script>
+<script type="text/javascript">
+	var socket = io.connect('http://'+document.domain+':'+location.port)
+	socket.on('connect', function(){
+		socket.emit('message', {user:"{{session['id']}}", username:"{{session['username']}}"});
+	});
+	socket.on('message', function(data){
+		newdata = JSON.parse(data)
+		holder='';
+		for (var i = 0; i < newdata.length; i++) {
+			var count = 0
+			console.log(newdata.length);
+			if (newdata[i].username=="guest"){
+				count ++
+			}else{
+				holder +='<span id='+newdata[i].user+'> '+newdata[i].username+' </span>'
+			}
+
+			if(holder !=''){
+				document.getElementById("online").innerHTML=holder+' and '+count+' guests';
+			}else{
+				document.getElementById("online").innerHTML=count+' guests';
+			}
+						
+		}
+		
+		
+		//socket.emit('message', {data:"connected"});
+	})
+
+
+</script>
+{% endblock %}
